@@ -1,14 +1,14 @@
 ## 说明
 
-## 在线预览
+### 在线预览
 
-## 本地运行
+### 本地运行
 
-## 目录结构
+### 源码结构
 
 ## 沉淀
 
-### 样式配置
+### 初始化配置
 
 #### 全局 variable 文件
 
@@ -26,7 +26,7 @@
 
 #### mixin 文件
 
-「主要是为组件提供统一的功能」将功能抽离出来，可以在多个组件中进行复用.
+「主要是为组件提供统一的功能」将功能抽离出来，可以在多个组件中进行复用.（）
 
 ### 移动端相关
 
@@ -60,6 +60,24 @@ module.exports = {
 
 [地址](https://github.com/neutrinojs/webpack-chain)，能够配置的东西太多了...
 
+#### webpack devServer 代理请求
+
+[DevServer](https://webpack.docschina.org/configuration/dev-server/)
+
+### 懒加载 与 封装 v-lazy
+
 ### vue-router 收获
 
 #### router-link tag 和 active 配合
+
+### 开发技巧
+
+#### jsonp
+
+[封装好的 jsonp](https://github.com/sup-fiveyear/jsonp),其实现原理精简为如下思路：
+
+promisify
+
+#### axios
+
+#### 偷接口数据...
