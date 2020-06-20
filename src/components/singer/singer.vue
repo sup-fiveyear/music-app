@@ -1,6 +1,6 @@
 <template>
   <div>
-    singer
+    测试
   </div>
 </template>
 
