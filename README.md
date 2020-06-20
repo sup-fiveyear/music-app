@@ -66,6 +66,12 @@ module.exports = {
 
 ### 懒加载 与 封装 v-lazy
 
+### 抽离 scroll 代理组件
+
+### keep-alive 提升性能
+
+为什么 需要加载 router-view 上面？ 直接加到 Recommend 为什么不可以？
+
 ### vue-router 收获
 
 #### router-link tag 和 active 配合
@@ -81,3 +87,14 @@ promisify
 #### axios
 
 #### 偷接口数据...
+
+### css
+
+#### 居中
+
+```stylus
+    position absolute
+    width 100%
+    top 50%
+    transform translateY(50%)
+```

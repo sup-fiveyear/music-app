@@ -3,7 +3,9 @@
     <m-header />
     <!--导航栏-->
     <tab />
-    <router-view />
+    <keep-alive>
+      <router-view />
+    </keep-alive>
   </div>
 </template>
 

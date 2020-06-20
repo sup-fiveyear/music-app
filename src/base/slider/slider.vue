@@ -59,6 +59,22 @@ export default {
         this._play();
       }
     }, 20);
+    /**
+     * FIX: 当窗口大小发生改变后，会导致BScroll失效
+     *
+     * 方案：
+     *  - 重新计算轮播图的宽度
+     *  - 调用 BS 的 进行刷新
+     *
+     * */
+    window.addEventListener("resize", () => {
+      if (!this.scroll) {
+        return;
+      }
+      this._setSliderWidth(true);
+      this.slider.refresh();
+      this.$emit("refresh");
+    });
   },
   methods: {
     /**
@@ -67,9 +83,12 @@ export default {
      * 对插槽内部的内容元素添加class属性：slider-item
      *
      * 注意：better-scroll 在实现轮播图上需要左右各克隆一个节点，因此这里的width最终需要 + 2个
+     *
+     *
      * @private
+     * @param {boolean} resize T:不需要再对图片进行左右克隆操作
      */
-    _setSliderWidth() {
+    _setSliderWidth(resize) {
       this.children = this.$refs.sliderGroup.children;
       let sliderWidth = this.$refs.slider.clientWidth;
       let width = 0;
@@ -79,7 +98,7 @@ export default {
         child.style.width = sliderWidth + "px";
         width += sliderWidth;
       }
-      if (this.loop) {
+      if (this.loop && !resize) {
         width += 2 * sliderWidth;
       }
       this.$refs.sliderGroup.style.width = width + "px";

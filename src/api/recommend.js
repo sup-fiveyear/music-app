@@ -39,8 +39,7 @@ export function getDiscList() {
     })
     .then(res => {
       return Promise.resolve(res.data);
-    })
-    .catch(e => console.log(e));
+    });
 }
 
 export function getSongList(disstid) {
