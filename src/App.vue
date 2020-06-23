@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <m-header />
-    <!--导航栏-->
+    <!--导航栏-->    
     <tab />
     <keep-alive>
       <router-view />
@@ -22,4 +22,5 @@ export default {
 </script>
 <style lang="stylus">
 @import "common/stylus/mixin.styl"
+
 </style>

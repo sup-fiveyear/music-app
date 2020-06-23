@@ -1,6 +1,7 @@
 import jsonp from "../common/js/jsonp";
 import { commonParams, options } from "./config";
 import axios from "axios";
+import { HOST } from "../common/js/config";
 
 /**
  * 发起jsonp请求，获取轮播图组件数据
@@ -57,4 +58,9 @@ export function getSongList(disstid) {
   });
 
   return jsonp(url, data, options);
+}
+
+export function getRecommendList() {
+  const url = HOST + "/personalized";
+  return axios.get(url);
 }

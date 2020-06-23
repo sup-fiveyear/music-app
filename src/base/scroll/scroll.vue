@@ -5,8 +5,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-import BScroll from 'better-scroll'
+import BScroll from "better-scroll";
 
+/**
+ * 对bscroll 进行初始化工作
+ */
 export default {
   props: {
     probeType: {
@@ -36,71 +39,80 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      this._initScroll()
-    }, 20)
+      this._initScroll();
+    }, 20);
   },
   methods: {
+    /**
+     * 初始化bscroll
+     *
+     */
     _initScroll() {
+      // 保证bscroll初始化时不会出错
       if (!this.$refs.wrapper) {
-        return
+        return;
       }
       this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
         click: this.click
-      })
+      });
 
       if (this.listenScroll) {
-        let me = this
-        this.scroll.on('scroll', (pos) => {
-          me.$emit('scroll', pos)
-        })
+        let me = this;
+        this.scroll.on("scroll", pos => {
+          me.$emit("scroll", pos);
+        });
       }
 
       if (this.pullup) {
-        this.scroll.on('scrollEnd', () => {
-          if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
-            this.$emit('scrollToEnd')
+        this.scroll.on("scrollEnd", () => {
+          if (this.scroll.y <= this.scroll.maxScrollY + 50) {
+            this.$emit("scrollToEnd");
           }
-        })
+        });
       }
 
       if (this.beforeScroll) {
-        this.scroll.on('beforeScrollStart', () => {
-          this.$emit('beforeScroll')
-        })
+        this.scroll.on("beforeScrollStart", () => {
+          this.$emit("beforeScroll");
+        });
       }
     },
+    /**
+     * 对bscroll 进行方法代理
+     *
+     *
+     */
     disable() {
-      this.scroll && this.scroll.disable()
+      this.scroll && this.scroll.disable();
     },
     enable() {
-      this.scroll && this.scroll.enable()
+      this.scroll && this.scroll.enable();
     },
     refresh() {
-      this.scroll && this.scroll.refresh()
+      this.scroll && this.scroll.refresh();
     },
     scrollTo() {
-      this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
+      this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
     },
     scrollToElement() {
-      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
+      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
     }
   },
 
-
   /*
-  * 保证当外部数据发生改变后，scroll组件能够自动刷新
-  * 保证能够正确点击和拖动
-  *
-  * **/
+   * 保证当外部数据发生改变后，scroll组件能够自动刷新
+   * 保证能够正确点击和拖动
+   *
+   * **/
   watch: {
     data() {
       setTimeout(() => {
-        this.refresh()
-      }, 20)
+        this.refresh();
+      }, 20);
     }
   }
-}
+};
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus"></style>
