@@ -1,12 +1,92 @@
-## 说明
+# 说明
 
 ### 在线预览
 
 ### 本地运行
 
-### 源码结构
+### 项目结构
 
-## 沉淀
+# 沉淀
+
+## 命名规范
+
+## 代码组织
+
+### vuex
+
+## 业务组件
+
+## 通用组件
+
+## 难点总结
+
+### 音乐播放器
+
+#### 状态设计
+通过功能分析，可以将状态拆分如下几类：(TODO: 功能截图)
+
+- 控制播放器的状态：
+    
+    - 是否在播放?
+    - 是否全屏展示？
+
+- 控制播放器歌曲的状态：
+
+    - 播放的歌曲列表？
+    - 歌单的序列？
+    - 播放模式？随机？顺序播放？
+    - 当前播放到第几个？
+
+- 播放器文案：
+    - 待定
+        
+通过对播放器状态的初步分析，可以写出如下字段
+
+```js
+const state = {
+  singer: {},
+  playing: false,
+  fullScreen: false,
+  playlist: [], // 源歌单数据
+  sequenceList: [],
+  mode: playMode.sequence,
+  currentIndex: -1,
+
+/*mode =>>
+  sequence: 0, 顺序播放
+  loop: 1, 单曲循环
+  random: 2 随机播放
+*/
+}
+```
+
+最后把额外对应的 mutations 以及 mutations-types 进行编写，对于 actions 等到需要有 **异步请求** 或 **合并多个mutations** 时在写~
+
+在设计组件状态时，跟黄哥学到了一条规则：**state中只保存最底层的数据，对数据的计算全部移入到getter中。**
+
+例如在状态中定义了 `currentIndex` 标识当前歌曲播放的索引，可以通过 `playlist[currentIndex]` 获取对应的歌曲名。
+
+```js
+/getters.js
+
+export const currentSong = (state) => {
+  return state.playlist[state.currentIndex] || {}
+}
+```
+
+#### 播放功能
+
+audio 延时调用audio.play方法
+
+控制音乐
+
+
+
+### v-lazy 实现原理
+
+### 封装高可用轮播图组件
+
+## css总结
 
 ### 初始化配置
 
@@ -64,7 +144,7 @@ module.exports = {
 
 [DevServer](https://webpack.docschina.org/configuration/dev-server/)
 
-### 懒加载 与 封装 v-lazy
+
 
 ### 抽离 scroll 代理组件
 
@@ -84,10 +164,6 @@ module.exports = {
 
 promisify
 
-#### axios
-
-#### 偷接口数据...
-
 ### css
 
 #### 居中
@@ -98,3 +174,5 @@ promisify
     top 50%
     transform translateY(50%)
 ```
+
+#### line-height : 1

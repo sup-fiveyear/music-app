@@ -57,8 +57,12 @@ export default {
         click: this.click
       });
 
+      //向外触发scroll事件，并传递当前的位置
       if (this.listenScroll) {
+        // 在箭头函数中的this是指向scroll自身的
+        // 需要让其指向当前组件实例，所以保存了this
         let me = this;
+        console.log('scroll')
         this.scroll.on("scroll", pos => {
           me.$emit("scroll", pos);
         });

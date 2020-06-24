@@ -1,5 +1,8 @@
 <template>
-  <list-view :artists="artists" class="singer" />
+  <div class="singer">
+    <list-view :artists="artists" class="singer" @select="selectSinger" />
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
@@ -7,6 +10,9 @@ import listView from "../../base/listview/listView.vue";
 import { getartists } from "../../api/singer";
 import pinyin from "pinyin";
 import Singer from "../../common/js/singer";
+import {createNamespacedHelpers} from 'vuex'
+
+const { mapMutations } = createNamespacedHelpers('musicSinger');
 
 const HOT_SINGER_LEN = 10;
 const HOT_NAME = "热门";
@@ -24,6 +30,13 @@ export default {
     this.getArtistsData();
   },
   methods: {
+    selectSinger(singer) {
+      this.$router.push({
+        path: `/singer/${singer.id}`
+      });
+
+      this.setSinger(singer)
+    },
     /**
      * FIXME:  对数据的处理，放在nodejs服务器上，避免前端计算浪费过多的性能
      *
@@ -108,7 +121,10 @@ export default {
         return a.title.charCodeAt(0) - b.title.charCodeAt(0);
       });
       return hot.concat(ret);
-    }
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    })
   }
 };
 </script>

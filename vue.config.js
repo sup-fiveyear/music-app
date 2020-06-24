@@ -5,6 +5,7 @@ function resolve(dir) {
   return path.join(__dirname, dir);
 }
 module.exports = {
+
   lintOnSave: true,
   chainWebpack: config => {
     config.resolve.alias
@@ -15,6 +16,7 @@ module.exports = {
       .set("base", resolve("src/base"));
   },
   devServer: {
+    host: '0.0.0.0',// 原为: host: 'localhost'
     before(app) {
       app.get("/api/getDiscList", function(req, res) {
         const url =
