@@ -23,7 +23,7 @@
       ref="list"
     >
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list @selectSong="selectSongHandle" :songs="songs"></song-list>
       </div>
     </scroll>
   </div>
@@ -33,6 +33,9 @@
 import scroll from "../../base/scroll/scroll";
 import songList from "base/song-list/song-list";
 import { prefixStyle } from "../../common/js/dom";
+import {createNamespacedHelpers} from 'vuex';
+const { mapActions } = createNamespacedHelpers('musicPlayer');
+
 
 const RESERVED_HEIGHT = 40;
 const transform = prefixStyle("transform");
@@ -92,7 +95,6 @@ export default {
         this.$refs.bgImage.style.paddingTop = `70%`;
         this.$refs.bgImage.style.height = 0;
       }
-      console.log(scale);
       this.$refs.bgImage.style["transform"] = `scale(${scale})`;
       this.$refs.bgImage.style.zIndex = zIndex;
     }
@@ -126,7 +128,23 @@ export default {
     },
     back() {
       this.$router.back();
-    }
+    },
+    /**
+     * 调用播放器
+     *
+     * 将歌曲名、对应的索引传递给vuex
+     * @param song
+     * @param index
+     */
+    selectSongHandle(song,index) {
+      this.selectPlay({
+        list: this.songs,
+        index: index,
+      })
+    },
+    ...mapActions([
+      'selectPlay'
+    ])
   }
 };
 </script>

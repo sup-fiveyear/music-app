@@ -18,7 +18,6 @@ const debug = process.env.NODE_ENV !== "production";
 
   moduleFiles.keys().forEach(moduleFile => {
     let _store = moduleFiles(moduleFile).default;
-    console.log(_store);
     let modulesName =moduleFile.replace(/^\.\//, '').replace(/\.js$/, '');
     let modules = rootModule.modules = (rootModule.modules || {});
     modules[modulesName] = _store;

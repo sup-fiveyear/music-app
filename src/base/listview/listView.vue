@@ -98,11 +98,10 @@ export default {
         return
       }
       // 在中间部分滚动
-      console.log(newY,listHeight);
+
       for (let i = 0; i < listHeight.length - 1; i++) {
         let height1 = listHeight[i];
         let height2 = listHeight[i + 1];
-        console.log(`h1:${height1},h2:${height2}`);
         if (-newY >= height1 && -newY < height2) {
           this.currentIndex = i;
           // 此时的diff就是fixtittle 和 当前滑动之间的距离
@@ -140,7 +139,7 @@ export default {
      * @param e
      */
     onShortcutTouchStart(e) {
-      console.log(`${e}，触发触摸事件`);
+
       let anchorIndex = getData(e.target,'index');
       let firstTouch = e.touches[0];
       this.touch.y1 = firstTouch.pageY;
@@ -175,7 +174,7 @@ export default {
         height += item.clientHeight;
         this.listHeight.push(height)
       }
-      console.log(this.listHeight)
+
     },
     selectItem(item) {
       this.$emit('select', item)
