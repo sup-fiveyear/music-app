@@ -15,8 +15,13 @@
         <div class="middle">
           <div class="middle-l">
             <div class="cd-wrapper">
-              <div class="cd" >
-                <img :class="cdCls" :src="currentSong.image" class="image" alt="" />
+              <div class="cd">
+                <img
+                  :class="cdCls"
+                  :src="currentSong.image"
+                  class="image"
+                  alt=""
+                />
               </div>
             </div>
           </div>
@@ -43,9 +48,15 @@
       </div>
     </transition>
     <div class="mini-player" v-show="!fullScreen" @click="fullScreenPlayer">
-      <div class="icon" >
+      <div class="icon">
         <div class="imgWrapper">
-          <img :class="cdCls" width="40" height="40" :src="currentSong.image" alt="" />
+          <img
+            :class="cdCls"
+            width="40"
+            height="40"
+            :src="currentSong.image"
+            alt=""
+          />
         </div>
       </div>
       <div class="text">
@@ -101,7 +112,7 @@ export default {
     },
     ...mapMutations({
       setFullScreen: "SET_FULL_SCREEN",
-      setPlaying: "SET_PLAYING",
+      setPlaying: "SET_PLAYING"
     }),
     ...mapActions(["getSongUrl"])
   },
@@ -115,15 +126,15 @@ export default {
        * 因此延时20ms 保证在组件内部拿到src后才开始播放，防止报错
        */
       setTimeout(() => {
-          this.$refs.audio.src = this.currentSongUrl;
-          this.$refs.audio.play()
-      },1000)
+        this.$refs.audio.src = this.currentSongUrl;
+        this.$refs.audio.play();
+      }, 1000);
     },
     playing(newState) {
       const audio = this.$refs.audio;
-        this.$nextTick( () => {
-          newState ? audio.play() : audio.pause();
-        })
+      this.$nextTick(() => {
+        newState ? audio.play() : audio.pause();
+      });
     }
   }
 };
