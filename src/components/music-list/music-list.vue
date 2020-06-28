@@ -22,9 +22,10 @@
       class="list"
       ref="list"
     >
-      <div class="song-list-wrapper">
-        <song-list @selectSong="selectSongHandle" :songs="songs"></song-list>
-      </div>
+    <div class="song-list-wrapper">
+      <div class="song-title" :class="{'title-fiexd': stateSuctionTop}">测试</div>        
+      <song-list @selectSong="selectSongHandle" :songs="songs"></song-list>
+    </div>
     </scroll>
   </div>
 </template>
@@ -60,7 +61,8 @@ export default {
   },
   data() {
     return {
-      scrollY: 0
+      scrollY: 0,
+      stateSuctionTop: false,
     };
   },
   watch: {
@@ -79,20 +81,25 @@ export default {
       } else {
         // 向上滑动
         blur = Math.min(20, present * 20);
-      }
-
+      }  
       this.$refs.filter.style["backdrop-filter"] = `blur(${blur}px)`;
 
       this.$refs.layer.style["transform"] = `translate3d(0,${translateY}px,0)`;
-
       if (newVal < this.minTranslateY) {
         zIndex = 10;
         this.$refs.bgImage.style.paddingTop = 0;
+        console.log(`到达吸顶状态，`,this.minTranslateY);
+        this.stateSuctionTop = true;
+        /**
+         * 达到吸顶状态时，向内派发事件？
+         */
         this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`;
       } else {
         // 下拉
         zIndex = 0;
+        console.log(`下拉状态`);
         this.$refs.bgImage.style.paddingTop = `70%`;
+        this.stateSuctionTop = false;
         this.$refs.bgImage.style.height = 0;
       }
       this.$refs.bgImage.style["transform"] = `scale(${scale})`;
@@ -233,6 +240,8 @@ export default {
 
     .song-list-wrapper
       padding: 20px 30px
+      .title-fiexd
+        position fixed
     .loading-container
       position: absolute
       width: 100%

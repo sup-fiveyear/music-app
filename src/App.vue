@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <m-header />
-    <!--导航栏-->
-    <tab />
+    <!-- 全局Header -->
+    <my-header />
+    <!--全局导航器-->
+    <tab-bar />
     <keep-alive>
       <router-view />
     </keep-alive>
@@ -11,14 +12,14 @@
 </template>
 
 <script>
-import MHeader from "components/m-header/m-header";
-import Tab from "components/tab/tab";
+import MyHeader from "components/MyHeader/MyHeader";
+import TabBar from "components/TabBar/TabBar";
 import Player from "components/player/player";
 
 export default {
   components: {
-    MHeader,
-    Tab,
+    MyHeader,
+    TabBar,
     Player
   }
 };

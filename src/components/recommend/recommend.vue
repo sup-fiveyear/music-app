@@ -22,34 +22,9 @@
           </slider>
         </div>
 
-        <hot-song-list class="test" :data="recommendsList" v-if="_flag"></hot-song-list>
+        <recommend-songs-list class="test" :data="recommendsList" v-if="_flag"></recommend-songs-list>
         <!--推荐列表-->
-        <div class="recommend-list">
-          <h1 class="list-title">热门歌单推荐</h1>
-          <ul>
-            <li class="item" v-for="(item, index) in discList">
-              <!--            左边：图片-->
-              <div class="icon">
-                <a :href="item.linkUrl">
-                  <img
-                    width="60"
-                    height="60"
-                    :src="defaultImage"
-                    v-lazy="item.imgurl"
-                  />
-                </a>
-              </div>
-              <!--            右边：文本内容-->
-              <div class="text">
-                <h2 class="name" v-html="item.creator.name"></h2>
-                <p class="desc" v-html="item.dissname"></p>
-              </div>
-            </li>
-          </ul>
-          <div class="loading-container">
-            <loading class v-show="discList.length === 0" />
-          </div>
-        </div>
+        <recommend-songs :songList="discList"></recommend-songs>
       </div>
     </scroll>
   </div>
@@ -66,7 +41,8 @@ import scroll from "@/base/scroll/scroll";
 import { ERR_OK } from "../../api/config";
 import { defaultImage } from "../../common/js/config";
 import Loading from "../../base/loading/loading";
-import HotSongList from "@/components/test/HotSongList.vue";
+import RecommendSongsList from "./RecommendSongsList.vue";
+import RecommendSongs from "./RecommendSongs.vue";
 
 //FIXME: 
 /**
@@ -82,7 +58,8 @@ export default {
     Loading,
     Slider,
     scroll,
-    HotSongList
+    RecommendSongsList,
+    RecommendSongs
   },
   /**
    * recommends: 保存轮播图数据

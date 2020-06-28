@@ -3,8 +3,11 @@
     <router-link tag="div" to="/recommend" class="tab-item">
       <span class="tab-link">每日推荐</span>
     </router-link>
+    <router-link tag="div" to="/songSquare" class="tab-item">
+      <span class="tab-link">歌单广场</span>
+    </router-link>
     <router-link tag="div" to="/rank" class="tab-item">
-      <span class="tab-link">榜上歌单</span>
+      <span class="tab-link">榜上有名</span>
     </router-link>
     <router-link tag="div" to="/singer" class="tab-item">
       <span class="tab-link">歌手速览</span>

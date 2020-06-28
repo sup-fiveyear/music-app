@@ -1,7 +1,7 @@
 <template>
   <div class="m-header">
     <!-- 左侧Logo图片 -->
-    <div class="icon"></div>
+    <!-- <div class="icon"></div> -->
     <!-- 中间title -->
     <h1 class="text">{{ title }}</h1>
     <router-link tag="div" class="mine" to="/user">
@@ -11,19 +11,12 @@
 </template>
 
 <script>
-/**
- * 该组件并不是通用型组件
- *
- * 头像链接需要抽象出外部属性
- *
- * 左侧Logo可以做一个默认属性，如何把css样式提取出来，进行绑定？
- *
- */
+
 export default {
   props: {
     title: {
       type: String,
-      default: "QianQian Music"
+      default: "MyMusic"
     }
   }
 };
@@ -36,27 +29,31 @@ export default {
 .m-header {
   position: relative;
   height: 44px;
+  // 可以被后继元素继承样式
   color: $color-theme;
+  // 控制文本内容居中显示
   text-align: center;
 
-  .icon {
-    bg-image('logo');
-    width: 30px;
-    height: 32px;
-    background-size: 30px 32px;
-    margin-top: 6px;
-    margin-right: 9px;
-    display: inline-block;
-    vertical-align: top;
-    margin-top: 6px;
-    margin-right: 9px;
-  }
+  
+  // .icon {
+  //   bg-image('logo');
+  //   width: 30px;
+  //   height: 32px;
+  //   background-size: 30px 32px;
+  //   margin-top: 6px;
+  //   margin-right: 9px;
+  //   display: inline-block;
+  //   vertical-align: top;
+  //   margin-top: 6px;
+  //   margin-right: 9px;
+  // }
 
   .text {
-    display: inline-block;
-    vertical-align: top;
+    display: inline-block;    
     font-size: $font-size-large;
+    // 保证垂直居中
     line-height: 44px;
+    // vertical-align: top;
   }
 
   .mine {
@@ -65,10 +62,11 @@ export default {
     right: 0;
 
     .icon-mine {
-      display: block;
-      /* TODO: 为什么这里加一个block 就能下来？ */
-      padding: 12px;
+      display: inline-block;      
       font-size: 20px;
+      // 保证和text平齐
+      padding: 12px;
+      
     }
   }
 }

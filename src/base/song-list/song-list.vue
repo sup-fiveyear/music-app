@@ -1,5 +1,6 @@
 <template>
-  <div class="song-list">
+  
+  <div class="song-list">        
     <ul>
       <li class="item" v-for="(song,index) in songs" @click="selectItem(song,index)">
         <div class="content">
@@ -17,6 +18,10 @@ export default {
     songs: {
       type: Array,
       default: []
+    },
+    stateSuctionTop: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -46,8 +51,8 @@ export default {
   @import "~common/stylus/variable"
   @import "~common/stylus/mixin"
 
-  .song-list
-    .item
+  .song-list        
+    .item      
       display: flex
       align-items: center
       box-sizing: border-box

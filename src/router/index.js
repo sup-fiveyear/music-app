@@ -1,10 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Reacommend from "components/recommend/recommend";
+import Reacommend from "components/Recommend/Recommend";
+import SongSquare from 'components/SongSquare/SongSquare'
 import Search from "components/search/search";
-import Singer from "components/singer/singer";
+import Singer from "components/Singer/Singer";
 import Rank from "components/rank/rank";
-import SingerDetail from 'components/singer-detail/singer-detail';
+import SingerDetail from 'components/Singer/SingerDetail';
 Vue.use(VueRouter);
 
 const routes = [
@@ -15,6 +16,10 @@ const routes = [
   {
     path: "/recommend",
     component: Reacommend
+  },
+  {
+    path: "/songSquare",
+    component: SongSquare
   },
   {
     path: "/search",

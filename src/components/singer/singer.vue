@@ -1,12 +1,12 @@
 <template>
   <div class="singer">
-    <list-view :artists="artists" class="singer" @select="selectSinger" />
+    <artists-view :artists="artists" class="singer" @select="selectSinger" />
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import listView from "../../base/listview/listView.vue";
+import ArtistsView from "base/ArtistsView/ArtistsView.vue";
 import { getartists } from "../../api/singer";
 import pinyin from "pinyin";
 import Singer from "../../common/js/singer";
@@ -19,7 +19,7 @@ const HOT_NAME = "热门";
 
 export default {
   components: {
-    listView
+    ArtistsView
   },
   data() {
     return {
