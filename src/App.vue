@@ -26,5 +26,8 @@ export default {
 </script>
 <style lang="stylus">
 @import "common/stylus/mixin.styl"
-
+  #app {
+    height 200px
+    background linear-gradient(#E1E1E1,#FAFAFA);
+    }
 </style>

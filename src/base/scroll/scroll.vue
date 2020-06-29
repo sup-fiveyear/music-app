@@ -35,7 +35,11 @@ export default {
     data: {
       type: Array,
       default: null
-    }
+    },
+    scrollX: {
+      type: Boolean,
+      default: false
+    },
   },
   mounted() {
     setTimeout(() => {
@@ -54,7 +58,8 @@ export default {
       }
       this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
-        click: this.click
+        click: this.click,
+        scrollX: this.scrollX
       });
 
       //向外触发scroll事件，并传递当前的位置

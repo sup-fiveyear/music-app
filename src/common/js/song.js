@@ -1,5 +1,5 @@
 export default class Song {
-  constructor ({id, mid, singer, name, album, duration, image, url, aliaName}) {
+  constructor({ id, mid, singer, name, album, duration, image, url, aliaName }) {
     this.id = id;
     this.singer = singer;
     this.name = name;
@@ -10,7 +10,7 @@ export default class Song {
   }
 }
 
-function singerName (arr) {
+function singerName(arr) {
   let name = [];
   name = arr.map((item) => {
     return item.name
@@ -19,12 +19,21 @@ function singerName (arr) {
   return name.join('/')
 }
 
-export function createSong (music) {
+export function createSong(music) {
   return new Song({
     id: music.id,
     singer: singerName(music.ar),
     name: music.name,
     album: music.al.name,
     image: music.al.picUrl
+  })
+}
+
+export function createRecommendSong(music) {
+  return new Song({
+    id: music.id,
+    name: music.name,
+    image: music.picUrl,
+    singer: singerName(music.song.artists),
   })
 }

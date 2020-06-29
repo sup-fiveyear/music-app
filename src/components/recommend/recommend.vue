@@ -1,30 +1,27 @@
 <template>
   <div class="recommend" ref="recommend">
-    <!-- 抽离公共的scroll列表 -->
-    <!--    XXX: 绑定data，保证当数据请求回来后，让scroll自动refresh -->
-    <scroll ref="scroll" class="recommend-content" :data="discList">
-      <!--bscroll 需要包裹一个空标签,这样轮播和列表才可以一起滚动-->
+    <scroll ref="scroll" class="recommend-content" :data="sliderData">
       <div>
         <!--轮播组件-->
         <div
-          v-if="this.recommends.length > 0"
+          v-if="this.sliderData.length > 0"
           class="slider-wrapper"
           ref="sliderWrapper"
         >
-          <slider 
-          @refresh="refresh"
-          @xuanranchenggong="testFn"
-          >
-            <div v-for="(item, index) in recommends" :key="index">
+          <slider @refresh="refresh" @xuanranchenggong="testFn">
+            <div v-for="(item, index) in sliderData" :key="index">
               <a :href="item.linkUrl"></a>
               <img @load="loadImage" :src="item.picUrl" />
             </div>
           </slider>
         </div>
-
-        <recommend-songs-list class="test" :data="recommendsList" v-if="_flag"></recommend-songs-list>
-        <!--推荐列表-->
-        <recommend-songs :songList="discList"></recommend-songs>
+        <!--推荐歌单-->
+        <recommend-songs-list
+          class="recommend-songs-list"
+          :data="recommendDsicData"
+        ></recommend-songs-list>
+        <!--推荐歌曲-->
+        <recommend-songs :data="recommendSongsData"></recommend-songs>
       </div>
     </scroll>
   </div>
@@ -34,30 +31,32 @@
 import {
   getDiscList,
   getRecommend,
-  getRecommendList
+  getRecommendDsic,
+  getRecommendSongs
 } from "../../api/recommend";
 import Slider from "@/base/slider/slider.vue";
-import scroll from "@/base/scroll/scroll";
-import { ERR_OK } from "../../api/config";
-import { defaultImage } from "../../common/js/config";
-import Loading from "../../base/loading/loading";
+import Scroll from "@/base/Scroll/Scroll";
+// import { ERR_OK } from "../../api/config";
+import { defaultImage, ERR_OK } from "common/js/config";
+import { createRecommendSong } from "common/js/song";
 import RecommendSongsList from "./RecommendSongsList.vue";
 import RecommendSongs from "./RecommendSongs.vue";
 
-//FIXME: 
+//FIXME:
 /**
  * - 和pc版切换后更换后，依然存在bug：点击失效
  * - 刷新闪烁问题
  * - 图片和文字不是在一起显示的
  * - 图片懒加载：能够解决闪动问题？
+ * - 刷新导致轮播图放大
+ * - 轮播图上面缺一角
  */
 
 export default {
   name: "Recommend",
   components: {
-    Loading,
     Slider,
-    scroll,
+    Scroll,
     RecommendSongsList,
     RecommendSongs
   },
@@ -68,18 +67,17 @@ export default {
    */
   data() {
     return {
-      recommends: [],
-      discList: [],
-      recommendsList: [],
+      sliderData: [],
+      recommendDsicData: [],
+      recommendSongsData: [],
       _flag: false
     };
   },
   created() {
-    this.getSliderData();
-    this.getdiscListData();
-    this.getRecommendListData();
-    this.defaultImage = defaultImage;    
-    console.log(this._flag)
+    this._getSliderData();
+    this._getRecommendDsicData();
+    this._getRecommendSongsData();
+    this.defaultImage = defaultImage;
   },
 
   methods: {
@@ -91,42 +89,46 @@ export default {
     testFn(e) {
       this._flag = e;
     },
-    loadImage() {      
-      
-    },
+    loadImage() {},
     refresh() {
       this.$refs.scroll.refresh();
     },
-    getSliderData() {
+    // TODO: 轮播图的接口需要改一下
+    _getSliderData() {
       getRecommend()
         .then(res => {
-          if (res.code === ERR_OK) {
-            this.recommends = res.data.slider;
+          if (res.code === 0) {
+            this.sliderData = res.data.slider;
           }
         })
         .catch(err => {
           console.log(`获取轮播图数据出错，${err}`);
         });
     },
-    getdiscListData() {
-      getDiscList()
-        .then(res => {
-          if (res.code === ERR_OK) {
-            this.discList = res.data.list;
-          }
-        })
-        .catch(err => {
-          console.log(`获取推荐列表数据出错，${err}`);
-        });
-    },
-    getRecommendListData() {
-      getRecommendList().then(res => {
+    _getRecommendDsicData() {
+      getRecommendDsic().then(res => {
         if (res.data) {
           let resData = res.data.result.slice(0, 6);
-          console.log(resData);
-          this.recommendsList = resData;
+          this.recommendDsicData = resData;
         }
       });
+    },
+    _getRecommendSongsData() {
+      getRecommendSongs()
+        .then(res => {
+          console.log(res);
+
+          if (res.status === ERR_OK) {
+            console.log(1);
+            console.log(res.data);
+            let songsList = res.data.result.map(item => {
+              return createRecommendSong(item);
+            });
+            console.log(songsList);
+            this.recommendSongsData = songsList;
+          }
+        })
+        .catch(e => console.log(e));
     }
   }
 };
@@ -138,11 +140,10 @@ export default {
   width: 100%;
   top: 88px;
   bottom: 0;
-
+}
   .recommend-content {
     height: 100%;
     overflow: hidden;
-
     .slider-wrapper {
       position: relative;
       width: 90%;
@@ -150,59 +151,8 @@ export default {
       border-radius 8px
       margin 0 auto;
     }
-
-    .test{
-      margin-top 30px
-    }
-    .recommend-list {
-      width 90%
-      margin 0 auto
-      .list-title {
-        height: 45px;
-        line-height: 45px;
-        text-align: left ;
-        font-size: 15px;
-        color: $color-theme;
-      }
-
-      .item {
-        display: flex;
-        box-sizing: border-box;
-        align-items: center;
-        padding: 5px 0
-
-        .icon {
-          flex: 0 0 60px;
-          width: 60px;
-          padding-right: 20px;
-        }
-
-        .text {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          flex: 1;
-          line-height: 15px;
-          overflow: hidden;
-          font-size: 12px;
-          .name {
-            margin-bottom: 10px;
-            color: $color-text;
-          }
-
-          .desc {
-            color: $color-text-d;
-          }
-        }
-      }
-
-      .loading-container {
-        position: absolute;
-        width: 100%;
-        top: 50%;
-        transform: translateY(50%);
-      }
+    .recommend-songs-list{
+      margin-top 10px
     }
   }
-}
 </style>

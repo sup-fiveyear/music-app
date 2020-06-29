@@ -37,7 +37,7 @@ export default {};
     text-align: center;
 
     .tab-link {
-      color: $color-text-ll;
+      // color: $color-text-ll;
     }
 
     &.router-link-active {

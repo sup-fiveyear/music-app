@@ -1,77 +1,76 @@
 <template>
   <transition appear name="slide">
-    <music-list :title="title" :bgImage="bgImage" :songs="listDetail"></music-list>
+    <music-list
+      :title="title"
+      :bgImage="bgImage"
+      :songs="listDetail"
+    ></music-list>
   </transition>
 </template>
 
 <script>
-
-import {getSingerDetail} from "api/singer";
-import {ERR_OK} from "../../common/js/config";
-import {createSong} from "../../common/js/song";
+import { getSingerDetail } from "api/singer";
+import { ERR_OK } from "../../common/js/config";
+import { createSong } from "../../common/js/song";
 import MusicList from "../music-list/music-list";
 
-import {createNamespacedHelpers} from 'vuex'
+import { createNamespacedHelpers } from "vuex";
 
-const {mapState,mapGetters} = createNamespacedHelpers('musicSinger');
-
+const { mapState, mapGetters } = createNamespacedHelpers("musicSinger");
 
 export default {
   name: "singer-detail",
-  components: {MusicList},
+  components: { MusicList },
   computed: {
     title() {
-      return this.singer.name
+      return this.singer.name;
     },
     bgImage() {
-      return this.singer.avatar
+      return this.singer.avatar;
     },
-    ...mapGetters(['singer'])
+    ...mapGetters(["singer"])
   },
   data() {
     return {
       hotSongs: [],
-      listDetail:[],
-    }
+      listDetail: []
+    };
   },
   watch: {
     hotSongs(newData) {
-      this.listDetail = this._normalizeSongs(newData)
+      this.listDetail = this._normalizeSongs(newData);
     }
   },
   created() {
     this._getDetail();
   },
   methods: {
-    _getDetail() {
-
+    async _getDetail() {
       if (!this.singer.id) {
-        this.$router.push('/singer')
+        this.$router.push("/singer");
       }
-      getSingerDetail(this.singer.id).then((res) => {
-        if (res.status === ERR_OK) {
-          this.hotSongs = res.data.hotSongs
-        }
-      })
+      let res = await getSingerDetail(this.singer.id);
+      if (res.status === ERR_OK) {
+        this.hotSongs = res.data.hotSongs;
+      }
     },
     _normalizeSongs(list) {
       let ret = [];
-      list.forEach((item) => {
-        ret.push(createSong(item))
+      list.forEach(item => {
+        ret.push(createSong(item));
       });
-      return ret
-    },
+      return ret;
+    }
   }
-}
+};
 </script>
 
 <style lang="stylus" scoped>
-  .slide-enter-active, .slide-leave-active {
-    transition: all 0.2s
-  }
-  .slide-enter, .slide-leave-to {
-    transform: translate3d(30%, 0, 0);
-    opacity: 0;
-  }
+.slide-enter-active, .slide-leave-active {
+  transition: all 0.2s
+}
+.slide-enter, .slide-leave-to {
+  transform: translate3d(30%, 0, 0);
+  opacity: 0;
+}
 </style>
-

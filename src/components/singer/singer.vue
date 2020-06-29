@@ -1,60 +1,74 @@
 <template>
   <div class="singer">
-    <artists-view :artists="artists" class="singer" @select="selectSinger" />
+    <!-- 傻瓜组件：渲染歌手内容和字母表 -->
+    <singer-view :artists="artistsData" @select="selectSinger" />
+    <!-- 用于承担二级页面：歌手详情 -->
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import ArtistsView from "base/ArtistsView/ArtistsView.vue";
-import { getartists } from "../../api/singer";
+import SingerView from "base/SingerView/SingerView.vue";
+import { getArtists } from "api/singer";
 import pinyin from "pinyin";
-import Singer from "../../common/js/singer";
-import {createNamespacedHelpers} from 'vuex'
+import Singer from "common/js/singer";
+import { createNamespacedHelpers } from "vuex";
 
-const { mapMutations } = createNamespacedHelpers('musicSinger');
-
+const { mapMutations } = createNamespacedHelpers("musicSinger");
 const HOT_SINGER_LEN = 10;
 const HOT_NAME = "热门";
 
 export default {
   components: {
-    ArtistsView
+    SingerView
   },
   data() {
     return {
-      artists: []
+      artistsData: []
     };
   },
   created() {
     this.getArtistsData();
   },
   methods: {
+    /**
+     * - 响应歌手点击行为
+     *  - 路由跳转到歌手详情页面
+     *  - 向vuex中存储歌手信息
+     */
     selectSinger(singer) {
       this.$router.push({
         path: `/singer/${singer.id}`
       });
-
-      this.setSinger(singer)
+      this.setSinger(singer);
     },
     /**
-     * FIXME:  对数据的处理，放在nodejs服务器上，避免前端计算浪费过多的性能
+     * 1. 对数据进行两层处理
+     *  - 调用_addFirstPY函数，增加initial字段并标识拼音首字母
+     *  - 调用_normalizeSinger函数，进行数据二次处理
      *
-     * - 对歌手数据中，每一项增加initail字段
-     * - 用于字母表的分组渲染功能
+     * 2. 将处理后的数据存储至 artistsData
      */
-    getArtistsData() {
-      getartists().then(res => {
-        let s = res.data.artists;
-        s.map(item => {
-          let py = pinyin(item.name[0], {
-            style: pinyin.STYLE_FIRST_LETTER
-          });
-          item.initial = py[0][0].toUpperCase();
-        });
-        this.artists = this._normalizeSinger(s);
-      });
+    async getArtistsData() {
+      let res = await getArtists();
+      let originData = res.data.artists;
+      originData = this._addFirstPY(originData);
+      this.artistsData = this._normalizeSinger(originData);
     },
+    _addFirstPY(data) {
+      data.map(item => {
+        let py = pinyin(item.name[0], { style: pinyin.STYLE_FIRST_LETTER });
+        item.initial = py[0][0].toUpperCase();
+      });
+      console.log(`提取首字母后的数据为:`, data);
+      return data;
+    },
+    /**
+     * - 默认前十条数据为热门歌手
+     * - 通过Singer类包装数据
+     * - 对数据进行排序
+     * - 拼接数据 hot + (A-Z) 返回结果
+     */
     _normalizeSinger(list) {
       let map = {
         hot: {
@@ -62,13 +76,8 @@ export default {
           items: []
         }
       };
-      /*
-       * 模拟出热门数据
-       *
-       * - 默认选择前十条数据作为热门歌手
-       *
-       * **/
       list.forEach((item, index) => {
+        // 增加热门数据
         if (index < HOT_SINGER_LEN) {
           map.hot.items.push(
             new Singer({
@@ -79,6 +88,7 @@ export default {
             })
           );
         }
+        // 初始化字母表数据结构
         const key = item.initial;
         if (!map[key]) {
           map[key] = {
@@ -86,6 +96,7 @@ export default {
             items: []
           };
         }
+        // 按照字母分类存储至map中
         map[key].items.push(
           new Singer({
             id: item.id,
@@ -98,9 +109,9 @@ export default {
       let hot = [];
       let ret = [];
       /*
-       * - 对map中数据进行分区操作
-       *  ~ hot 存储 包含HOT_NAME的数据
-       *  ~ ret 存储 正常处理后的数据
+       * - 对map中数据进行分区操作，存储到两个数组中：
+       *  - hot 存储 热门数据
+       *  - ret 存储 A - Z歌手数据
        */
       for (const key in map) {
         let val = map[key];
@@ -111,6 +122,8 @@ export default {
         }
       }
       /**
+       * - 数据排序操作
+       *
        * sort 排序算法默认情况下就是对utf-16代码单元值进行排序
        *
        * 因此我们可以获取其首字母的utf-16码进行比较
@@ -120,10 +133,11 @@ export default {
       ret.sort((a, b) => {
         return a.title.charCodeAt(0) - b.title.charCodeAt(0);
       });
+      // 最后将数据进行拼接后返回
       return hot.concat(ret);
     },
     ...mapMutations({
-      setSinger: 'SET_SINGER'
+      setSinger: "SET_SINGER"
     })
   }
 };
@@ -131,9 +145,6 @@ export default {
 
 <style lang="stylus" scoped>
 .singer
-  /*
-    能够让热门title 固定在一个位置上？
-  */
   position: fixed
   top: 88px
   bottom: 0

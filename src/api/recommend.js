@@ -60,7 +60,12 @@ export function getSongList(disstid) {
   return jsonp(url, data, options);
 }
 
-export function getRecommendList() {
+export function getRecommendDsic() {
   const url = HOST + "/personalized";
   return axios.get(url);
+}
+
+export function getRecommendSongs() {
+  const url = HOST + "/personalized/newsong"
+  return axios.get(url)
 }

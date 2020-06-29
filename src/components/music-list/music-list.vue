@@ -22,21 +22,22 @@
       class="list"
       ref="list"
     >
-    <div class="song-list-wrapper">
-      <div class="song-title" :class="{'title-fiexd': stateSuctionTop}">测试</div>        
-      <song-list @selectSong="selectSongHandle" :songs="songs"></song-list>
-    </div>
+      <div class="song-list-wrapper">
+        <div class="song-title" :class="{ 'title-fiexd': stateSuctionTop }">
+          测试
+        </div>
+        <song-list @selectSong="selectSongHandle" :songs="songs"></song-list>
+      </div>
     </scroll>
   </div>
 </template>
 
 <script>
-import scroll from "../../base/scroll/scroll";
+import Scroll from "base/Scroll/Scroll";
 import songList from "base/song-list/song-list";
 import { prefixStyle } from "../../common/js/dom";
-import {createNamespacedHelpers} from 'vuex';
-const { mapActions } = createNamespacedHelpers('musicPlayer');
-
+import { createNamespacedHelpers } from "vuex";
+const { mapActions } = createNamespacedHelpers("musicPlayer");
 
 const RESERVED_HEIGHT = 40;
 const transform = prefixStyle("transform");
@@ -62,7 +63,7 @@ export default {
   data() {
     return {
       scrollY: 0,
-      stateSuctionTop: false,
+      stateSuctionTop: false
     };
   },
   watch: {
@@ -81,14 +82,14 @@ export default {
       } else {
         // 向上滑动
         blur = Math.min(20, present * 20);
-      }  
+      }
       this.$refs.filter.style["backdrop-filter"] = `blur(${blur}px)`;
 
       this.$refs.layer.style["transform"] = `translate3d(0,${translateY}px,0)`;
       if (newVal < this.minTranslateY) {
         zIndex = 10;
         this.$refs.bgImage.style.paddingTop = 0;
-        console.log(`到达吸顶状态，`,this.minTranslateY);
+        console.log(`到达吸顶状态，`, this.minTranslateY);
         this.stateSuctionTop = true;
         /**
          * 达到吸顶状态时，向内派发事件？
@@ -126,7 +127,7 @@ export default {
     this.$refs.list.$el.style.top = `${this.imageHeight}px`;
   },
   components: {
-    scroll,
+    Scroll,
     songList
   },
   methods: {
@@ -143,15 +144,13 @@ export default {
      * @param song
      * @param index
      */
-    selectSongHandle(song,index) {
+    selectSongHandle(song, index) {
       this.selectPlay({
         list: this.songs,
-        index: index,
-      })
+        index: index
+      });
     },
-    ...mapActions([
-      'selectPlay'
-    ])
+    ...mapActions(["selectPlay"])
   }
 };
 </script>
