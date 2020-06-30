@@ -32,8 +32,10 @@ export default {
   },
   methods: {
     /**
-     * - 响应歌手点击行为
+     * 功能： 响应歌手点击行为
+     *
      *  - 路由跳转到歌手详情页面
+     *
      *  - 向vuex中存储歌手信息
      */
     selectSinger(singer) {
