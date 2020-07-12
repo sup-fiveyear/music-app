@@ -21,6 +21,7 @@
       @scroll="scroll"
       class="list"
       ref="list"
+      :click="true"
     >
       <div class="song-list-wrapper">
         <div class="song-title" :class="{ 'title-fiexd': stateSuctionTop }">

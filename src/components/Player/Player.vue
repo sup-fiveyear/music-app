@@ -7,7 +7,7 @@
         </div>
         <div class="top">
           <div class="back" @click="packUpPlayer">
-            <i class="icon-back"></i>
+            <i class="gm-icon iconfont icon-fanhui"></i>
           </div>
           <h1 class="title" v-html="currentSong.name"></h1>
           <h2 class="subtitle" v-html="currentSong.singer"></h2>
@@ -26,7 +26,18 @@
             </div>
           </div>
         </div>
+        <div class="bottom-above">
+
+        </div>
         <div class="bottom">
+          <div class="icon above">
+            <div>
+              <i class="gm-icon iconfont icon-shoucang"></i>
+            </div>
+            <div>
+              <i class="gm-icon iconfont icon-pinglun"></i>
+            </div>
+          </div>
           <div class="progress-wrapper">
             <span class="time-l">{{format(currentTime)}}</span>
             <div class="progress-bar-wrapper">
@@ -39,16 +50,17 @@
               <i class="mode" :class="iconMode" @click="changeMode"></i>
             </div>
             <div class="icon i-left">
-              <i class="icon-prev" @click="prevSong"></i>
+              <i class="gm-icon iconfont icon-047caozuo_shangyishou" @click="prevSong"></i>
             </div>
             <div class="icon i-center">
               <i @click="togglePlaying" :class="playIcon"></i>
             </div>
             <div class="icon i-right">
-              <i class="icon-next" @click="nextSong"></i>
+              <i class="gm-icon iconfont icon-49xiayishou" @click="nextSong"></i>
             </div>
+
             <div class="icon i-right">
-              <i class="icon icon-not-favorite"></i>
+              <i class="gm-icon iconfont icon-bofangliebiao"></i>
             </div>
           </div>
         </div>
@@ -111,22 +123,22 @@ export default {
       return this.playing ? "play" : "";
     },
     playIcon() {
-      return this.playing ? "icon-pause" : "icon-play";
+      return this.playing ? "gm-icon iconfont icon-zanting" : "gm-icon iconfont icon-ziyuan";
     },
     miniIcon() {
       return this.playing ? "icon-pause-mini" : "icon-play-mini";
     },
     iconMode() {
       if (this.mode === playMode.sequence) {
-        return 'icon-next'
+        return 'gm-icon iconfont icon-xunhuan'
       } else if (this.mode === playMode.loop) {
-        return 'icon-loop'
+        return 'gm-icon iconfont icon-icon-'
       } else {
-        return 'icon-random'
+        return 'gm-icon iconfont icon-suiji'
       }
     },
     percent () {
-      console.log('计算属性重新计算了');      
+      console.log('计算属性重新计算了');
       let res = +(this.currentTime / this.duration).toFixed(6)
       return res;
     },
@@ -153,12 +165,12 @@ export default {
     },
     songEnd() {
       this.currentTime = 0;
-      console.log(this.percent);      
+      console.log(this.percent);
       if(this.mode === playMode.loop) {
         this.playLoop()
       }else {
         this.playNext()
-      }      
+      }
     },
     playLoop() {
       this.$refs.audio.currentTime = 0
@@ -230,14 +242,14 @@ export default {
         songListProcessing = shuffleDeck(this.playList);
       }else {
         songListProcessing = this.sequenceList
-      }          
+      }
       this._resetCurrentIndex(songListProcessing);
       this.setPlayList(songListProcessing);
     },
     _resetCurrentIndex(list) {
       /**
        * 在打乱的数组中 和 原歌曲列表
-       * 
+       *
        * 找到歌曲id相同的index
        */
       let index = list.findIndex(item => {
@@ -258,7 +270,7 @@ export default {
       setPlaying: "SET_PLAYING",
       setCurrentIndex: "SET_CURRENT_INDEX",
       setMode: "SET_MODE",
-      setPlayList: "SET_PLAY_LIST",      
+      setPlayList: "SET_PLAY_LIST",
     }),
     ...mapActions(["getSongUrl"])
   },
@@ -302,7 +314,10 @@ export default {
     bottom: 0;
     z-index: 150;
     background: $color-background;
-
+    .gm-icon {
+      font-size: $font-size-large-x
+      color: #e2e2e2
+    }
     .background {
       position: absolute;
       left: 0;
@@ -317,18 +332,14 @@ export default {
     .top {
       position: relative;
       margin-bottom: 25px;
-
       .back {
         position: absolute;
-        top: 0;
+        top: 6;
         left: 6px;
         z-index: 50;
-
         .icon-back {
           display: block;
           padding: 9px;
-          font-size: $font-size-large-x;
-          color: $color-theme;
           transform: rotate(-90deg);
         }
       }
@@ -358,7 +369,6 @@ export default {
       bottom: 170px;
       white-space: nowrap;
       font-size: 0;
-
       .middle-l {
         display: inline-block;
         vertical-align: top;
@@ -434,7 +444,6 @@ export default {
               color: $color-text;
             }
           }
-
           .pure-music {
             padding-top: 50%;
             line-height: 32px;
@@ -444,16 +453,21 @@ export default {
         }
       }
     }
-
     .bottom {
       position: absolute;
       bottom: 50px;
       width: 100%;
-
+      .above {
+        width 70%
+        display flex;
+        margin 0 auto;
+        justify-content space-between;
+        div {
+        }
+      }
       .dot-wrapper {
         text-align: center;
         font-size: 0;
-
         .dot {
           display: inline-block;
           vertical-align: middle;
@@ -500,39 +514,30 @@ export default {
       }
 
       .operators {
+        width 90%;
+        margin 0 auto;
         display: flex;
         align-items: center;
-
         .icon {
           flex: 1;
-          color: $color-theme;
-
           &.disable {
             color: $color-theme-d;
           }
-
-          i {
-            font-size: 30px;
-          }
         }
-
         .i-left {
           text-align: right;
         }
-
         .i-center {
           padding: 0 20px;
           text-align: center;
-
           i {
-            font-size: 40px;
+            font-size 50px;
+            color #e2e2e2;
           }
         }
-
         .i-right {
           text-align: left;
         }
-
         .icon-favorite {
           color: $color-sub-theme;
         }

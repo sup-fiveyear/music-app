@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-    <!-- 全局Header -->
-    <my-header />
-    <!--全局导航器-->
-    <tab-bar />
+    <div class="player-test"></div>
     <keep-alive>
       <router-view />
     </keep-alive>
@@ -13,21 +10,29 @@
 
 <script>
 import MyHeader from "components/MyHeader/MyHeader";
-import TabBar from "components/TabBar/TabBar";
-import Player from "components/player/player";
+import Player from "components/Player/Player";
+
 
 export default {
   components: {
     MyHeader,
-    TabBar,
-    Player
+    Player,
   }
 };
 </script>
 <style lang="stylus">
 @import "common/stylus/mixin.styl"
   #app {
-    height 200px
-    background linear-gradient(#E1E1E1,#FAFAFA);
+    /*height 200px*/
+    //background linear-gradient(#E1E1E1,#FAFAFA);
     }
+  .player-test
+    position fixed
+    top 10px
+    right 10px
+    width 30px
+    height 30px
+    border-radius 50%
+    background #EBEBEB
+    z-index 999
 </style>

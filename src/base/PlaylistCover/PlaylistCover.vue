@@ -1,6 +1,6 @@
 <template>
   <div class="list-content">
-    <div class="scroll-item" v-for="(item, index) in data" :key="index">
+    <div class="scroll-item" v-for="(item, index) in data" :key="index" @click="clickItem(item)">
       <div class="list-img-content">
         <div class="gradients"></div>
         <img class="list-img" v-lazy="item.picUrl" alt="" />
@@ -22,7 +22,15 @@ export default {
       type: Array,
       default: []
     }
-  }
+  },
+  methods: {
+    /**
+     * 向外派发当前内容被点击，并且携带当前的数据
+     */
+    clickItem(item) {
+      this.$emit('clickItem',item)
+    }
+  },
 };
 </script>
 

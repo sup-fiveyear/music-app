@@ -1,71 +1,37 @@
-import jsonp from "../common/js/jsonp";
-import { commonParams, options } from "./config";
 import axios from "axios";
 import { HOST } from "../common/js/config";
 
+
+
+
+export function getRecommendListDetail (id) {
+  const url = HOST + `/playlist/detail?id=${id}`
+  return axios.get(url)
+}
+
 /**
- * 发起jsonp请求，获取轮播图组件数据
+ * 获取轮播图数据
+ * @returns {Promise<AxiosResponse<any>>}
  */
-export function getRecommend() {
-  const url =
-    "https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg";
-
-  const data = Object.assign({}, commonParams, {
-    platform: "h5",
-    uin: 0,
-    needNewCode: 1
-  });
-
-  return jsonp(url, data, options);
+export function getBanner () {
+  const url = HOST + '/banner'
+  return axios.get(url)
 }
 
-export function getDiscList() {
-  const url = "/api/getDiscList";
-
-  const data = Object.assign({}, commonParams, {
-    platform: "yqq",
-    hostUin: 0,
-    sin: 0,
-    ein: 29,
-    sortId: 5,
-    needNewCode: 0,
-    categoryId: 10000000,
-    rnd: Math.random(),
-    format: "json"
-  });
-
-  return axios
-    .get(url, {
-      params: data
-    })
-    .then(res => {
-      return Promise.resolve(res.data);
-    });
-}
-
-export function getSongList(disstid) {
-  const url = "https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg";
-
-  const data = Object.assign({}, commonParams, {
-    type: 1,
-    json: 1,
-    utf8: 1,
-    onlysong: 0,
-    disstid,
-    platform: "yqq",
-    hostUin: 0,
-    needNewCode: 0
-  });
-
-  return jsonp(url, data, options);
-}
-
-export function getRecommendDsic() {
-  const url = HOST + "/personalized";
-  return axios.get(url);
-}
-
+/**
+ * 获取最新歌曲
+ * @returns {Promise<AxiosResponse<any>>}
+ */
 export function getRecommendSongs() {
   const url = HOST + "/personalized/newsong"
+  return axios.get(url)
+}
+
+/**
+ * 获取本周最热歌单，该接口无法实现下拉刷新功能
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export function getRecommendList () {
+  const url = HOST + '/personalized'
   return axios.get(url)
 }

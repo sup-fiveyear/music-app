@@ -1,10 +1,9 @@
 export function addClass(el, className) {
-  if (hasClass(el, className)) {
-    return;
-  }
-  let newClass = el.className.split("");
-  newClass.push(className);
-  el.className = newClass.join(" ");
+  el.classList.add(className)
+}
+
+export function removeClass(el, className) {
+  el.classList.remove(className)
 }
 
 export function hasClass(el, className) {

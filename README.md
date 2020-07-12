@@ -1,27 +1,277 @@
-# 说明
+TODO: iconfont 导入问题
 
-## 在线预览
+## 说明
 
-## 本地运行
+### 我对学项目课的看法
+
+### 在线预览
+
+### 本地运行
+
+## 总结
+
+### 命名规范
+
+良好的命名规范能够在绝大多数工程中增加可读性、开发体验和可维护性。常见的单文件命名方式有：
+
+- 羊肉串命名法 `my-components`
+- 大驼峰命名法 `My-Components`
+
+> 本项目采用的是大驼峰命名法，是因为编辑器支持度更友好。
+
+#### 基础组件
+
+基础组件的功能可以概述为：应用于特定样式和约定，为你的应用奠定一致的基础样式和行为。
+
+只能包括：
+
+- HTML
+- 其他基础组件
+- 第三方 UI 组件库
+
+**一定不包含全局状态（Vuex），没有业务逻辑，单纯的向外派发事件或者渲染内容。**
+
+> 本项目采用`Base`作为基础组件的前缀进行命名
+
+#### 单例组件
+
+只拥有一个实例的组件称之为单例组件，但并不代表这个组件只能用于一个单页面，而是在一个页面只能使用一次。
+
+同时，这些组件**不能接受任何 prop，他们是为应用订制的，不是应用中的上下文。**
+
+> 本项目采用`The`作为单例组件的前缀进行命名
+
+#### 耦合组件
+
+和父组件紧密耦合的子组件应该以父组件名作为前缀进行命名，这样能够强调该组件只能在某个组件的场景下才有意义，所以这层关系首先要体现在名字上。
+
+同时在编辑器中会按照字母顺序将文件组织有序，提高开发体验。
 
 ## 项目结构
 
-# 总结
+### 整体结构
 
-## 命名规范
+TODO: 文件树形结构
 
-## 代码组织
+### 组件结构
 
-### vuex
+#### 推荐页面
 
-## 业务组件
+**TheRecommend**
 
-### 推荐页面
+将整个推荐页面抽象成一个树根，节点为`TheRecommend`单例组件。作为推荐业务逻辑的容器，负责整合其他功能，例如：轮播、人气歌单、热门歌曲。
 
-TODO:
-热门歌曲副标题 - 浅色
+**RecommendMenus**
 
-播放 icon
+- 人气歌单推荐功能本身就是耦合于推荐页面的，因此将其抽象成耦合组件`RecommendMenus`。
+
+- 该组件主要提供交互逻辑（滚动），以及推荐歌单的承载。
+
+- 由于其主要功能可以抽象成每个歌单展示组件，所以又抽象出用于展示歌单的`BaseMenuCover`组件。
+
+**RecommendSongs**
+
+- 同样和推荐页面耦合，以及和`RecommendMenus`组件高度相似。
+
+- 提供和播放器的交互逻辑，以及推荐歌曲的承载 - 同样和推荐页面耦合，以及和`RecommendMenus`组件高度相似。
+
+- 提供和播放器的交互逻辑，以及推荐歌曲的承载。
+
+- 同样，也抽象出用于展示歌曲的`BaseSongList`组件。
+
+**BaseScroll**
+
+由于该项目很多地方都需要滚动功能，因此对`better-Scroll`进行二次封装，以便我们使用。 关于 better-scroll 请查阅下文难点部分总结。
+
+#### 最热歌手
+
+#### 歌单广场
+
+#### 排行榜
+
+### vuex 结构
+
+## 难点总结
+
+### better-scroll
+
+TODO: better-scroll 和 position :flexd 有什么关系呢？
+
+### 封装轮播图
+
+虽然更多时候我们都是直接引用别人封装好的，但是作为新时代的我们，还是有必要学习一下如何封装轮播图组件的！
+
+#### 结构和样式
+
+最外层通过slider将轮播图和dots进行封装，他的高度和宽度由轮播图自动撑开，不需要单独设置。
+
+轮播图有两层结构，最外层容器用来控制轮播图的整体样式，例如水平不换行，溢出隐藏。
+
+内层容器将每个图片以及覆盖上面的超链进行封装，这里需要将其浮动起来（`inline-block`也行，但是会有间隙，不如浮动更直观），使得能够一字排开。
+
+关于dots，这里采用绝对定位将整体定位到需要的位置上，让每个dot一字排开，这里采用的是`inline-block`.
+
+下面是核心代码：
+
+```html
+<div class="slider">
+    <div class="slider-group">
+      <slot></slot>
+    </div>
+    <div class="dots">
+      <span
+        class="dot"
+        :class="{ active: currentPageIndex === index }"
+        v-for="(item, index) in dots"
+        :key="index"
+      ></span>
+    </div>
+  </div>
+```
+
+```css
+.slider
+  min-height: 1px
+  .slider-group
+    /*保证水平不换行，同时*/
+    position: relative
+    overflow: hidden
+    white-space: nowrap
+    .slider-item
+      float: left
+      box-sizing: border-box
+      overflow: hidden
+      text-align: center
+      a
+        display: block
+        width: 100%
+        overflow: hidden
+        text-decoration: none
+      img
+        display: block
+        width: 100%
+  .dots
+    position: absolute
+    right: 0
+    left: 0
+    bottom: 12px
+    transform: translateZ(1px)
+    text-align: center
+    font-size: 0
+    .dot
+      display: inline-block
+      margin: 0 4px
+      width: 8px
+      height: 8px
+      border-radius: 50%
+      background: $color-text-l
+      &.active
+        width: 20px
+        border-radius: 5px
+        background: $color-text-ll
+```
+
+#### 功能分析
+
+能够通过外部控制的功能：
+
+loop：是否循环播放
+autoPlay：是否自动轮播
+interval：轮播间隙
+
+映射到组件，即为内部的props。
+
+#### 实现思路
+
+1. 在初始化组件时，需要做四件事：
+ - 动态设置轮播图容器宽度，以及子项的class属性，保证样式正确
+ - 动态计算dots数量
+ - 初始化better-scroll
+ - 注册resize事件
+
+2. 初始化better-scroll时需要注册交互逻辑处理，在代码中已给出详细注释
+
+3. 边界处理：当视口宽度发生改变后，需要重新计算轮播图内容大小，并刷新betterScroll
+
+4. dots联动，通过一个变量控制样式即可。
+
+#### 手势封装
+
+- [ ] 我会回来的！
+
+
+### 播放器逻辑
+
+多个组件都可以操作播放器，并且当播放器缩小后，播放器还可以在后台运行。
+
+所以将播放器的数据存储在vuex是比较合适的，这样能够让多个单例组件共享同一个播放状态。
+
+#### 状态设计
+
+通过功能分析，可以将状态拆分如下几类：
+
+- 控制播放器的状态：
+
+  - 是否在播放?
+  - 是否全屏展示？
+
+- 控制播放器歌曲的状态：
+
+  - 播放的歌曲列表？
+  - 歌单的序列？
+  - 播放模式？随机？顺序播放？
+  - 当前播放到第几个？
+
+- 播放器文案：
+  - 待定
+
+通过对播放器状态的初步分析，可以写出如下字段
+
+```js
+const state = {
+  singer: {},
+  playing: false,
+  fullScreen: false,
+  playlist: [], // 源歌单数据
+  sequenceList: [],
+  mode: playMode.sequence,
+  currentIndex: -1
+
+  /*mode =>>
+  sequence: 0, 顺序播放
+  loop: 1, 单曲循环
+  random: 2 随机播放
+*/
+};
+```
+
+最后把额外对应的 mutations 以及 mutations-types 进行编写，对于 actions 等到需要有 **异步请求** 或 **合并多个 mutations** 时在写~
+
+在设计组件状态时，跟黄哥学到了一条规则：**state 中只保存最底层的数据，对数据的计算全部移入到 getter 中。**
+
+例如在状态中定义了 `currentIndex` 标识当前歌曲播放的索引，可以通过 `playlist[currentIndex]` 获取对应的歌曲名。
+
+```js
+/getters.js
+
+export const currentSong = (state) => {
+  return state.playlist[state.currentIndex] || {}
+}
+```
+
+#### 功能和开发
+
+1. 搭建播放器基础页面
+2. 调通 vuex 状态流，并获取正确数据
+3. 初步增加播放器交互事件
+   - 收起、弹出播放器
+   - 控制 radio 的播放状态
+4. 歌曲前进后退功能
+5. 进度条功能
+6. 播放顺序以及收藏功能
+
+### v-lazy 实现原理
+
 
 ### 歌手速览
 
@@ -86,174 +336,9 @@ TODO: 移动端 手势移动触发顺序
 
 ### 搜索功能
 
-## 基础组件
+- 经典搜索框逻辑
 
-### ArtistsView
+#### 经典搜索框逻辑
 
-- 用于展示歌手页面的傻瓜组件
-- 该组件接受一个数组作为数据源
-- 布局结构采用经典的 `ul + flex` 来实现。
-- 交互功能已在联动组件部分进行总结，这里不做赘述。
-
-## 难点总结
-
-### 音乐播放器
-
-#### 状态设计
-
-通过功能分析，可以将状态拆分如下几类：(TODO: 功能截图)
-
-- 控制播放器的状态：
-
-  - 是否在播放?
-  - 是否全屏展示？
-
-- 控制播放器歌曲的状态：
-
-  - 播放的歌曲列表？
-  - 歌单的序列？
-  - 播放模式？随机？顺序播放？
-  - 当前播放到第几个？
-
-- 播放器文案：
-  - 待定
-
-通过对播放器状态的初步分析，可以写出如下字段
-
-```js
-const state = {
-  singer: {},
-  playing: false,
-  fullScreen: false,
-  playlist: [], // 源歌单数据
-  sequenceList: [],
-  mode: playMode.sequence,
-  currentIndex: -1
-
-  /*mode =>>
-  sequence: 0, 顺序播放
-  loop: 1, 单曲循环
-  random: 2 随机播放
-*/
-};
-```
-
-最后把额外对应的 mutations 以及 mutations-types 进行编写，对于 actions 等到需要有 **异步请求** 或 **合并多个 mutations** 时在写~
-
-在设计组件状态时，跟黄哥学到了一条规则：**state 中只保存最底层的数据，对数据的计算全部移入到 getter 中。**
-
-例如在状态中定义了 `currentIndex` 标识当前歌曲播放的索引，可以通过 `playlist[currentIndex]` 获取对应的歌曲名。
-
-```js
-/getters.js
-
-export const currentSong = (state) => {
-  return state.playlist[state.currentIndex] || {}
-}
-```
-
-#### 拆分
-
-可以拆分如下步骤：
-
-1. 搭建播放器基础页面
-2. 调通 vuex 状态流，并获取正确数据
-3. 初步增加播放器交互事件
-   - 收起、弹出播放器
-   - 控制 radio 的播放状态
-4. 歌曲前进后退功能
-5. 进度条功能
-6. 播放顺序以及收藏功能
-
-### v-lazy 实现原理
-
-### 封装高可用轮播图组件
-
-## css 总结
-
-### 初始化配置
-
-#### 全局 variable 文件
-
-首先我们需要一个 variable.styl 文件，作为所有有规律的、大范围使用的、颜色和字体等，这样能够在开发中能够降低代码的冗余性，提高代码质量。
-
-并且在后期维护项目上，会变得相对轻松些。
-
-#### 全局 base 文件
-
-同 variable 文件，具有相同性质和意义。只不过其控制的范围更广一些，作为整个项目 css 样式的默认底片。
-
-#### 暴露接口 index 文件
-
-主要是将拆分出不同功能的 css 文件，进行整合并向外统一暴露，使得导入样式配置及其简单整洁。
-
-#### mixin 文件
-
-「主要是为组件提供统一的功能」将功能抽离出来，可以在多个组件中进行复用.（）
-
-### 移动端相关
-
-#### meta 配置
-
-#### 300ms 点击问题
-
-### webpack hack
-
-#### webpack alias
-
-不知道在项目打包部署时是否会遇到坑，先这样使用着~
-
-```js
-const path = require("path");
-function resolve(dir) {
-  return path.join(__dirname, dir);
-}
-module.exports = {
-  lintOnSave: true,
-  chainWebpack: config => {
-    config.resolve.alias
-      .set("@$", resolve("src"))
-      .set("common", resolve("src/common"))
-      .set("components", resolve("src/components"));
-  }
-};
-```
-
-#### webpack chain
-
-[地址](https://github.com/neutrinojs/webpack-chain)，能够配置的东西太多了...
-
-#### webpack devServer 代理请求
-
-[DevServer](https://webpack.docschina.org/configuration/dev-server/)
-
-### 抽离 scroll 代理组件
-
-### keep-alive 提升性能
-
-为什么 需要加载 router-view 上面？ 直接加到 Recommend 为什么不可以？
-
-### vue-router 收获
-
-#### router-link tag 和 active 配合
-
-### 开发技巧
-
-#### jsonp
-
-[封装好的 jsonp](https://github.com/sup-fiveyear/jsonp),其实现原理精简为如下思路：
-
-promisify
-
-### css
-
-#### 居中
-
-```stylus
-    position absolute
-    width 100%
-    top 50%
-    transform translateY(50%)
-```
-
-#### line-height : 1
+- v-model
+- 防抖

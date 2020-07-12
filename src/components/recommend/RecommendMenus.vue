@@ -3,10 +3,10 @@
     <!-- 文本内容-->
     <div class="hot-text">
       <h1>人气歌单推荐</h1>
-      <span>发现更多</span>
+      <span @click="jumpToSquare">发现更多</span>
     </div>
     <scroll class="scroll-wrapper" :data="data" :scrollX="true">
-      <play-list-cover :data="data"></play-list-cover>
+      <play-list-cover :data="data" @clickItem="jumpToMenusDetail"></play-list-cover>
     </scroll>
   </div>
 </template>
@@ -24,6 +24,20 @@ export default {
     go: {
       type: Boolean,
       default:false
+    }
+  },
+  methods: {
+    /**
+     * 跳转到歌单广场
+     */
+    jumpToSquare() {
+      this.$router.push('/songSquare')
+    },
+    /**
+     * 跳转到指定的歌单详情页面
+     */
+    jumpToMenusDetail(item) {
+      console.log('跳转到歌单歌单详情页面',item)
     }
   },
   components: {

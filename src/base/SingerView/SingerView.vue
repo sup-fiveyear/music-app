@@ -6,6 +6,7 @@
     :listen-scroll="listenScroll"
     :probe-type="probeType"
     @scroll="getScrollY"
+    :click="true"
   >
     <!--作曲家-->
     <ul>
@@ -33,7 +34,7 @@
     <!--字符表-->
     <div
       class="list-shortcut"
-      @touchstart="onShortcutTouchStart"
+      @touchstart.prevent="onShortcutTouchStart"
       @touchmove.stop.prevent="onShortcutTouchMove"
     >
       <ul>

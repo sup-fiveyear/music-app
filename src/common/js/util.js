@@ -1,4 +1,4 @@
-const createRandom = (lowerBound,upperBound) => {
+const createRandom = (lowerBound, upperBound) => {
   return Math.floor(Math.random() * (upperBound - lowerBound + 1) + lowerBound)
 }
 
@@ -9,12 +9,24 @@ const createRandom = (lowerBound,upperBound) => {
  * @param arr
  * @returns {*}
  */
-export function shuffleDeck (arr) {
+export function shuffleDeck(arr) {
   let _arr = arr.slice(0);
-  for(let i = 0;i < arr.length;i++){
-    let j = createRandom(0,i);
-  //    交换arr[i] 和 arr[j]
-    [_arr[i],_arr[j]] = [_arr[j],_arr[i]];
+  for (let i = 0; i < arr.length; i++) {
+    let j = createRandom(0, i);
+    //    交换arr[i] 和 arr[j]
+    [_arr[i], _arr[j]] = [_arr[j], _arr[i]];
   }
   return _arr;
+}
+
+export function debounce(fn, delay) {
+  let timer
+  return function (...args) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      fn.apply(this, args)
+    }, delay);
+  }
 }
