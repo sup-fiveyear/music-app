@@ -227,9 +227,7 @@ export default {
       line-height: 20px
       padding-left: 10px
       margin-top 10px
-      font-size: $font-size-small
-      // background: #E0E0E0
-      background: $color-sub-theme
+      font-size: $font-size-medium
     .list-group-item
       display flex
       align-items: center
@@ -249,18 +247,18 @@ export default {
     transform translateY(-65%)
 
     // 上下留白，尺寸
-    padding 20px 0
-    border-radius: 10px
-    width: 20px
-    background: #E0E0E0
+    padding 10px 0
+    border-radius: 5px
+    width: 20px    
     text-align: center
+    background: #757575
     .item
       padding 3px
       line-height: 1
       color: $color-text-l
       font-size: $font-size-small
       &.current
-        color: $color-theme
+        color: #ff8a65
   .list-fixed
     position: absolute
     top: 0

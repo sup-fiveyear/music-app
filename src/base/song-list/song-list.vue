@@ -87,5 +87,5 @@ export default {
         .desc
           no-wrap()
           margin-top: 4px
-          color: $color-text-d
+          color #bdbdbd         
 </style>

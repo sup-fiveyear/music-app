@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { HOST } from 'common/js/config'
 export function getHotKey() {
-  const url = HOST + '/search/hot/detail'
+  const url = HOST + '/Search/hot/detail'
   return axios.get(url)
 }
 

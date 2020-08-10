@@ -2,7 +2,7 @@
   <div class="music-list">
     <!--    头部返回按钮-->
     <div class="back" @click="back">
-      <i class="icon-back"></i>
+      <i class="icon-back iconfont icon-fanhui"></i>
     </div>
     <!--title-->
     <h1 class="title" v-html="title"></h1>
@@ -23,10 +23,7 @@
       ref="list"
       :click="true"
     >
-      <div class="song-list-wrapper">
-        <div class="song-title" :class="{ 'title-fiexd': stateSuctionTop }">
-          测试
-        </div>
+      <div class="song-list-wrapper">        
         <song-list @selectSong="selectSongHandle" :songs="songs"></song-list>
       </div>
     </scroll>
@@ -126,6 +123,7 @@ export default {
     this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT;
     // list是一个组件，我们需要拿到$el，对他进行高度设置
     this.$refs.list.$el.style.top = `${this.imageHeight}px`;
+    console.log(this.songs);
   },
   components: {
     Scroll,
@@ -177,7 +175,7 @@ export default {
       display: block
       padding: 10px
       font-size: $font-size-large-x
-      color: $color-theme
+      color: #f5f5f5
   .title
     position: absolute
     top: 0
@@ -188,7 +186,7 @@ export default {
     text-align: center
     line-height: 40px
     font-size: $font-size-large
-    color: $color-text
+    color #f5f5f5
   .bg-image
     position: relative
     width: 100%

@@ -3,7 +3,7 @@
     <router-link tag="div" class="tab-item" to="/recommend">
       <span class="tab-link">推荐</span>
     </router-link>
-    <router-link tag="div" class="tab-item" to="/rank">
+    <router-link tag="div" class="tab-item" to="/songsquare">
       <span class="tab-link">歌单广场
       </span>
     </router-link>

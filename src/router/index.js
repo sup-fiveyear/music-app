@@ -1,11 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Reacommend from "components/Recommend/Recommend";
-import SongSquare from 'components/SongSquare/SongSquare'
+import SongSquare from "components/SongSquare/SongSquare";
 import Search from "components/Search/Search";
 import Singer from "components/Singer/Singer";
 import Rank from "components/rank/rank";
-import SingerDetail from 'components/Singer/SingerDetail';
+import SingerDetail from "components/Singer/SingerDetail";
 Vue.use(VueRouter);
 
 const routes = [
@@ -18,19 +18,15 @@ const routes = [
     component: Reacommend
   },
   {
-    path: "/songSquare",
+    path: "/songsquare",
     component: SongSquare
-  },
-  {
-    path: "/search",
-    component: Search
-  },
+  },  
   {
     path: "/singer",
     component: Singer,
     children: [
       {
-        path: ':id',
+        path: ":id",
         component: SingerDetail
       }
     ]

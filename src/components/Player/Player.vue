@@ -6,7 +6,7 @@
           <img :src="currentSong.image" alt="" width="100%" height="100%" />
         </div>
         <div class="top">
-          <div class="back" @click="packUpPlayer">
+          <div class="back" @click="playerShowUp">
             <i class="gm-icon iconfont icon-fanhui"></i>
           </div>
           <h1 class="title" v-html="currentSong.name"></h1>
@@ -26,10 +26,9 @@
             </div>
           </div>
         </div>
-        <div class="bottom-above">
-
-        </div>
+        <div class="bottom-above"></div>
         <div class="bottom">
+          <!--收藏、评论功能栏-->
           <div class="icon above">
             <div>
               <i class="gm-icon iconfont icon-shoucang"></i>
@@ -38,27 +37,39 @@
               <i class="gm-icon iconfont icon-pinglun"></i>
             </div>
           </div>
+          <!--进度条-->
           <div class="progress-wrapper">
-            <span class="time-l">{{format(currentTime)}}</span>
+            <span class="time-l">{{ format(currentTime) }}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar :percent="percent" @percentChangeEnd="modifyMusicTime"></progress-bar>
+              <progress-bar
+                :percent="percent"
+                @percentChangeEnd="modifyMusicTime"
+              ></progress-bar>
             </div>
-            <span class="time-r">{{format(duration)}}</span>
+            <span class="time-r">{{ format(duration) }}</span>
           </div>
+          <!--音乐播放器操作面板-->
           <div class="operators">
             <div class="icon i-left">
               <i class="mode" :class="iconMode" @click="changeMode"></i>
             </div>
+            <!--播放上一首-->
             <div class="icon i-left">
-              <i class="gm-icon iconfont icon-047caozuo_shangyishou" @click="prevSong"></i>
+              <i
+                class="gm-icon iconfont icon-047caozuo_shangyishou"
+                @click="playingPrevSong"
+              ></i>
             </div>
             <div class="icon i-center">
-              <i @click="togglePlaying" :class="playIcon"></i>
+              <i @click="playingStateToggle" :class="playIcon"></i>
             </div>
+            <!--播放下一首-->
             <div class="icon i-right">
-              <i class="gm-icon iconfont icon-49xiayishou" @click="nextSong"></i>
+              <i
+                class="gm-icon iconfont icon-49xiayishou"
+                @click="playingNextSong"
+              ></i>
             </div>
-
             <div class="icon i-right">
               <i class="gm-icon iconfont icon-bofangliebiao"></i>
             </div>
@@ -66,7 +77,7 @@
         </div>
       </div>
     </transition>
-    <div class="mini-player" v-show="!fullScreen" @click="fullScreenPlayer">
+    <div class="mini-player" v-show="!fullScreen" @click="playerShowHidden">
       <div class="icon">
         <div class="imgWrapper">
           <img
@@ -84,62 +95,66 @@
       </div>
       <div class="control">
         <progress-circle :radius="radius" :percent="percent">
-          <i class="icon-mini" :class="miniIcon" @click.stop="togglePlaying"></i>
+          <i
+            class="icon-mini"
+            :class="miniIcon"
+            @click.stop="playingStateToggle"
+          ></i>
         </progress-circle>
       </div>
       <div class="control"><i class="icon-playlist"></i></div>
     </div>
-    <audio ref="audio" @timeupdate="updateTime"
-    @ended="songEnd"
-    ></audio>
+    <audio ref="audio" @timeupdate="updateTime" @ended="songEnd"></audio>
   </div>
 </template>
 
 <script>
-  // FIXME: 音乐播放器放大缩小再次进入时，图片旋转位置不对
-  import {createNamespacedHelpers} from "vuex";
-  import ProgressBar from "../../base/progress-bar/progress-bar";
-  import ProgressCircle from 'base/progress-circle/progress-circle';
-  import {playMode} from "../../common/js/config";
-  import {shuffleDeck} from "../../common/js/util";
+// FIXME: 音乐播放器放大缩小再次进入时，图片旋转位置不对
+import { createNamespacedHelpers } from "vuex";
+import ProgressBar from "../../base/progress-bar/progress-bar";
+import ProgressCircle from "base/progress-circle/progress-circle";
+import { playMode } from "../../common/js/config";
+import { shuffleDeck } from "../../common/js/util";
 
-  const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers(
+const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers(
   "musicPlayer"
 );
-
 export default {
   name: "player",
-  components: {ProgressCircle, ProgressBar},
+  components: { ProgressCircle, ProgressBar },
   data() {
     return {
       currentTime: 0,
       duration: 0,
       radius: 32,
-      songReady: false,
-    }
+      songReady: false
+    };
   },
   computed: {
+    //根据当前音乐播放器状态动态计算icon样式
     cdCls() {
       return this.playing ? "play" : "";
     },
     playIcon() {
-      return this.playing ? "gm-icon iconfont icon-zanting" : "gm-icon iconfont icon-ziyuan";
+      return this.playing
+        ? "gm-icon iconfont icon-zanting"
+        : "gm-icon iconfont icon-ziyuan";
     },
     miniIcon() {
       return this.playing ? "icon-pause-mini" : "icon-play-mini";
     },
     iconMode() {
       if (this.mode === playMode.sequence) {
-        return 'gm-icon iconfont icon-xunhuan'
+        return "gm-icon iconfont icon-xunhuan";
       } else if (this.mode === playMode.loop) {
-        return 'gm-icon iconfont icon-icon-'
+        return "gm-icon iconfont icon-icon-";
       } else {
-        return 'gm-icon iconfont icon-suiji'
+        return "gm-icon iconfont icon-suiji";
       }
     },
-    percent () {
-      console.log('计算属性重新计算了');
-      let res = +(this.currentTime / this.duration).toFixed(6)
+    //计算当前歌曲播放的百分比，能够让进度条显示正确的位置
+    percent() {
+      let res = +(this.currentTime / this.duration).toFixed(6);
       return res;
     },
     ...mapGetters([
@@ -150,82 +165,98 @@ export default {
       "playing",
       "currentIndex",
       "mode",
-      "sequenceList",
+      "sequenceList"
     ])
   },
   methods: {
-    packUpPlayer() {
+    playerShowUp() {
       this.setFullScreen(false);
     },
-    fullScreenPlayer() {
+    playerShowHidden() {
       this.setFullScreen(true);
     },
-    togglePlaying() {
+    playingStateToggle() {
       this.setPlaying(!this.playing);
     },
     songEnd() {
       this.currentTime = 0;
-      console.log(this.percent);
-      if(this.mode === playMode.loop) {
-        this.playLoop()
-      }else {
-        this.playNext()
+      if (this.mode === playMode.loop) {
+        this.playLoop();
+      } else {
+        this.playNext();
       }
     },
     playLoop() {
-      this.$refs.audio.currentTime = 0
-        this.$refs.audio.play()
-        this.setPlayingState(true)
+      this.$refs.audio.currentTime = 0;
+      this.$refs.audio.play();
+      this.setPlayingState(true);
     },
     playNext() {
-      let index = this.currentIndex + 1
+      let index = this.currentIndex + 1;
       if (index === this.playList.length) {
-        index = 0
+        index = 0;
       }
-      this.setCurrentIndex(index)
+      this.setCurrentIndex(index);
       if (!this.playing) {
-        this.togglePlaying()
+        this.playingStateToggle();
       }
     },
-    prevSong() {
+    playingPrevSong() {
       this.$refs.audio.pause();
-      let index = this.currentIndex - 1
-      if (index === -1) {
-        index = this.playList.length - 1
+      if (this.playList.length === 1) {
+        this.loop();
+      } else {
+        let index = this.currentIndex - 1;
+        if (index === -1) {
+          index = this.playList.length - 1;
+        }
+        this.setCurrentIndex(index);
+        !this.playing && this.playingStateToggle();
       }
-      this.setCurrentIndex(index);
     },
-    nextSong() {
+    playingNextSong() {
       this.$refs.audio.pause();
-      let index = this.currentIndex + 1
-      if (index === this.playList) {
-        index = 0
+      if (this.playList.length === 1) {
+        this.loop();
+      } else {
+        let index = this.currentIndex + 1;
+        if (index === this.playList) {
+          index = 0;
+        }
+        this.setCurrentIndex(index);
+        !this.playing && this.playingStateToggle();
       }
-      this.setCurrentIndex(index);
     },
     format(time) {
       /*
-      * 1. 取整
-      * 2. 获取分钟
-      * 3. 获取秒钟
-      *
-      * **/
-      time = time | 0
-      const minute = time / 60 | 0;
+       * 1. 取整
+       * 2. 获取分钟
+       * 3. 获取秒钟
+       *
+       * **/
+      time = time | 0;
+      const minute = (time / 60) | 0;
       const second = this._pad(time % 60 | 0);
-      return `${minute} : ${second}`
+      return `${minute} : ${second}`;
     },
     updateTime(e) {
       //XXX: duration放在这里可能不太合适，再考虑。
-      this.duration = this.$refs.audio.duration
-      this.currentTime = e.target.currentTime
+      this.duration = this.$refs.audio.duration;
+      this.currentTime = e.target.currentTime;
     },
+    /**
+     * 当进度条发生百分比改变后，当前播放的歌曲进度要跟着联动。
+     *
+     * 并且如果歌曲是暂停状态，此时要修改歌曲的播放状态。
+     *
+     * @param percent
+     */
     modifyMusicTime(percent) {
       const currentTime = percent * this.duration;
       this.$refs.audio.currentTime = currentTime;
       if (!this.playing) {
-        this.$refs.audio.play()
-        this.setPlaying(true)
+        this.$refs.audio.play();
+        this.setPlaying(true);
       }
     },
     changeMode() {
@@ -238,10 +269,10 @@ export default {
        *   还需要计算随机后的歌单中，对应的currentIndex，并同步到vuex中
        * */
       let songListProcessing = null;
-      if(mode === playMode.random) {
+      if (mode === playMode.random) {
         songListProcessing = shuffleDeck(this.playList);
-      }else {
-        songListProcessing = this.sequenceList
+      } else {
+        songListProcessing = this.sequenceList;
       }
       this._resetCurrentIndex(songListProcessing);
       this.setPlayList(songListProcessing);
@@ -254,14 +285,14 @@ export default {
        */
       let index = list.findIndex(item => {
         return item.id === this.currentSong.id;
-      })
+      });
       this.setCurrentIndex(index);
     },
-    _pad(num,n = 2) {
+    _pad(num, n = 2) {
       let len = num.toString().length;
-      while(len < n) {
-        num = '0' + num;
-        len++
+      while (len < n) {
+        num = "0" + num;
+        len++;
       }
       return num;
     },
@@ -270,13 +301,13 @@ export default {
       setPlaying: "SET_PLAYING",
       setCurrentIndex: "SET_CURRENT_INDEX",
       setMode: "SET_MODE",
-      setPlayList: "SET_PLAY_LIST",
+      setPlayList: "SET_PLAY_LIST"
     }),
     ...mapActions(["getSongUrl"])
   },
   watch: {
     currentSong(cur, prev) {
-      if(cur.id === prev.id) {
+      if (cur.id === prev.id) {
         return;
       }
       this.getSongUrl();
@@ -289,14 +320,14 @@ export default {
       setTimeout(() => {
         this.$refs.audio.src = this.currentSongUrl;
         this.$refs.audio.play();
-      }, 500);
+      }, 300);
     },
     playing(newState) {
       const audio = this.$refs.audio;
       this.$nextTick(() => {
         newState ? audio.play() : audio.pause();
       });
-    },
+    }
   }
 };
 </script>
@@ -315,8 +346,7 @@ export default {
     z-index: 150;
     background: $color-background;
     .gm-icon {
-      font-size: $font-size-large-x
-      color: #e2e2e2
+      font-size: $font-size-large-x;            
     }
     .background {
       position: absolute;
@@ -334,8 +364,8 @@ export default {
       margin-bottom: 25px;
       .back {
         position: absolute;
-        top: 6;
-        left: 6px;
+        top: 10px;
+        left: 10px;
         z-index: 50;
         .icon-back {
           display: block;
@@ -532,7 +562,6 @@ export default {
           text-align: center;
           i {
             font-size 50px;
-            color #e2e2e2;
           }
         }
         .i-right {
@@ -574,7 +603,7 @@ export default {
     z-index: 180;
     width: 100%;
     height: 60px;
-    background: $color-highlight-background;
+    background: #eceff1
 
     &.mini-enter-active, &.mini-leave-active {
       transition: all 0.4s;

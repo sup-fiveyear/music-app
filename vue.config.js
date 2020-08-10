@@ -109,7 +109,7 @@ module.exports = {
           });
       });
 
-      app.get("/api/search", function(req, res) {
+      app.get("/api/Search", function(req, res) {
         const url = "https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp";
         axios
           .get(url, {

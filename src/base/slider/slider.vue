@@ -1,6 +1,6 @@
 <template>
   <div class="slider" ref="slider">
-    <!-- better scroll 内部元素 -->
+    <!-- better Scroll 内部元素 -->
     <!-- XXX: 横向不能被撑开，所有需要计算sliderGroup的宽度 -->
     <div class="slider-group" ref="sliderGroup">
       <slot></slot>
@@ -97,7 +97,7 @@
        *
        * 对插槽内部的内容元素添加class属性：slider-item，使其获得 正确的样式
        *
-       * 注意：better-scroll 在实现轮播图上需要左右各克隆一个节点，因此这里的width宽度最终需要 + 2个
+       * 注意：better-Scroll 在实现轮播图上需要左右各克隆一个节点，因此这里的width宽度最终需要 + 2个
        *
        *
        * @private

@@ -18,6 +18,7 @@
   // BUG: 增加拖动功能后，进度条向前播放功能失效
   import {prefixStyle} from "common/js/dom";
   const transform = prefixStyle('transform');
+  // 小球的固定宽度
   const progressBtnWidth = 16
 
   export default {
@@ -33,20 +34,28 @@
     },
     methods: {
       /**
-       * 1. 获取当前整个进度条的宽度
-       * 2. 计算偏移量
+       * 获取当前整个进度条的宽度，动态的计算偏移量
+       *
+       * 保证进度条的小球能够出现在正确的位置上
        * @param newV
        */
       compProgressOffset(newV) {
         if (newV >= 0 ) {
-          const offsetWidth = newV * this.barWidth
+          const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth;
+          const offsetWidth = newV * barWidth
+          console.log(offsetWidth);
           this._setProgressOffset(offsetWidth)
         }
       },
+      /**
+       * 处理直接点击进度条的交互行为
+       *
+       * 1. 直接设置当前进度条和小球的位置
+       * 2. 动态计算修改后的百分比，并向外派发，保证音乐能够跟着修改当前播放的音乐
+       * */
       clickOnHandle(e) {
         this._setProgressOffset(e.offsetX);
         const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
-        console.log(this.$refs.progress.clientWidth,barWidth)
         const percent = this.$refs.progress.clientWidth / barWidth;
         this.$emit('percentChangeEnd',percent)
       },
@@ -73,6 +82,14 @@
         const percent = this.$refs.progress.clientWidth / barWidth
         this.$emit('percentChangeEnd', percent)
       },
+      /**
+       * 通过直接修改style的属性来控制进度条的长度
+       *
+       * 通过 translate3d 来控制小球的位移
+       *
+       * @param offsetWidth
+       * @private
+       */
       _setProgressOffset(offsetWidth){
         this.$refs.progress.style.width = `${offsetWidth}px`
         this.$refs.progressBtn.style[transform] = `translate3d(${offsetWidth}px,0,0)`
